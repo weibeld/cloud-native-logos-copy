@@ -12,4 +12,4 @@ jobs:
           for d in */; do
             [[ -z $(yq read .meta/logos.yaml "(id==${d%/})") ]] && missing+=("${d%/}")
           done
-          [[ -n "${missing[@]}" ]] && { echo "Logo IDs missing from index (.meta/logos.yaml): ${missing[@]}"; exit 1; }
+          [[ -n "${missing[@]}" ]] && { echo "Logo IDs missing from meta file (.meta/logos.yaml): ${missing[@]}"; exit 1; }
