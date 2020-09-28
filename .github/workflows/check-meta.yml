@@ -7,9 +7,15 @@ jobs:
       - uses: actions/checkout@v2
       - name: install-yq
         run: sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
-      - name: check-logos
+      - name: check-if-all-logos-are-in-meta-file
         run: |
           for d in */; do
             [[ -z $(yq read .meta/logos.yaml "(id==${d%/})") ]] && missing+=("${d%/}")
           done
-          [[ -n "${missing[@]}" ]] && { echo "Logo IDs missing from meta file (.meta/logos.yaml): ${missing[@]}"; exit 1; } || exit 0
+          [[ -n "${missing[@]}" ]] && { echo "The following logos are missing from the meta file (.meta/logos.yaml): ${missing[@]}"; exit 1; } || exit 0
+      - name: check-if-all-logos-have-name-entry-in-meta-file
+        run: |
+          for d in */; do
+            [[ -z $(yq read .meta/logos.yaml "(name==${d%/}).name") ]] && missing+=("${d%/}")
+          done
+          [[ -n "${missing[@]}" ]] && { echo "The following logos have no \"name\" entry in the meta file (.meta/logos.yaml): ${missing[@]}"; exit 1; } || exit 0
