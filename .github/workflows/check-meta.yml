@@ -1,21 +1,31 @@
-name: check-meta
+name: meta-checker
 on: push
+env:
+  META_LOGOS: .meta/logos.yaml
 jobs:
-  logos:
+  check-all-logos-have-meta-entry:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # Try getting yq binary from cache (https://github.com/actions/cache#skipping-steps-based-on-cache-hit) and only install if cache miss
       - name: install-yq
         run: sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
-      - name: check-if-all-logos-are-in-meta-file
+      - name: check
         run: |
           for d in */; do
-            [[ -z $(yq read .meta/logos.yaml "(id==${d%/})") ]] && missing+=("${d%/}")
+            [[ -z $(yq read "$META_LOGOS" "(id==${d%/})") ]] && missing+=("${d%/}")
           done
-          [[ -n "${missing[@]}" ]] && { echo "The following logos are missing from the meta file (.meta/logos.yaml): ${missing[@]}"; exit 1; } || exit 0
-      - name: check-if-all-logos-have-name-entry-in-meta-file
-        run: |
-          for d in */; do
-            [[ -z $(yq read .meta/logos.yaml "(name==${d%/}).name") ]] && missing+=("${d%/}")
+          [[ -n "${missing[@]}" ]] && { echo "The following logos have no entry in $META_LOGOS: ${missing[@]}"; exit 1; } || exit 0
+  check-all-meta-entries-have-name-field:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Try getting yq binary from cache (https://github.com/actions/cache#skipping-steps-based-on-cache-hit) and only install if cache miss
+      - name: install-yq
+        run: sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
+      - name: check
+        run: \
+          for id in $(yq read "$META_LOGOS" '[*].id'); do
+            [[ -z $(yq read "$META_LOGOS" "(id==$i).name") ]] && missing+=("$id")
           done
-          [[ -n "${missing[@]}" ]] && { echo "The following logos have no \"name\" entry in the meta file (.meta/logos.yaml): ${missing[@]}"; exit 1; } || exit 0
+          [[ -n "${missing[@]}" ]] && { echo "The following entries in $META_LOGOS have no \"name\" field: ${missing[@]}"; exit 1; } || exit 0
