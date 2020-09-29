@@ -516,6 +516,7 @@
 - id: rio
   name: Rio
   association: rancher
+  url: https://rio.io/
 - id: rancher-kubernetes-engine
   name: Rancher Kubernetes Engine
   aliases:
