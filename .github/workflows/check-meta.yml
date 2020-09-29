@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install-ajv
-        run: npm install -g ajv-cli
+        run: sudo npm install -g ajv-cli
       - name: validate
         run: ajv validate --verbose  --all-errors -s "$SCHEMA_LOGOS" -d "$META_LOGOS"
   logos-semantic-validation:
