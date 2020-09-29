@@ -24,7 +24,7 @@ jobs:
       - name: install-yq
         run: sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
       - name: check
-        run: \
+        run: |
           for id in $(yq read "$META_LOGOS" '[*].id'); do
             [[ -z $(yq read "$META_LOGOS" "(id==$i).name") ]] && missing+=("$id")
           done
