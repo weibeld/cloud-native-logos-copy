@@ -1,23 +1,26 @@
-name: validate-index
+name: validate-meta-file
 on: push
 env:
-  META_LOGOS: .meta/logos.yaml
-  SCHEMA_LOGOS: .meta/schema-logos.json
+  META: .meta.yaml
+  SCHEMA: .meta-schema.json
 jobs:
-  logos-structural:
+  structural:
+    name: Structural validation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      # TODO: Put ajv binary (/usr/local/bin/ajv) in cache and access from there
       - name: install-ajv
         run: sudo npm install -g ajv-cli
       - name: validate
         run: ajv validate --verbose  --all-errors -s "$SCHEMA_LOGOS" -d "$META_LOGOS"
-  logos-semantic:
-    needs: logos-structural
+  semantic-ids:
+    needs: structural
+    name: Semantic validation: check each directory has corresponding meta item
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # Try getting yq binary from cache (https://github.com/actions/cache#skipping-steps-based-on-cache-hit) and only install if cache miss
+      # TODO: put yq binary (/usr/local/bin/yq) in cache and access from there (https://github.com/actions/cache#skipping-steps-based-on-cache-hit)
       - name: install-yq
         run: sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
       - name: validate
@@ -26,3 +29,13 @@ jobs:
             [[ -z $(yq read "$META_LOGOS" "(id==${d%/})") ]] && missing+=("${d%/}")
           done
           [[ -n "${missing[@]}" ]] && { echo "The following logos have no entry in $META_LOGOS: ${missing[@]}"; exit 1; } || exit 0
+  semantic-ids:
+    needs: structural
+    name: Semantic validation: check meta item has corresponding directory
+    runs-on: ubuntu-latest
+    steps: 
+  semantic-associations:
+    needs: structural
+    name: Semantic validation: associations
+    runs-on: ubuntu-latest
+    steps:
