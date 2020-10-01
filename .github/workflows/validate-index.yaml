@@ -1,4 +1,4 @@
-name: validate-meta-files
+name: validate-index
 on: push
 env:
   META_LOGOS: .meta/logos.yaml
