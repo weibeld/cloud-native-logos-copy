@@ -9,5 +9,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: test
-        run: git log --reverse --format=%H commit-msg-validation-head..HEAD
+      - name: get-commits
+        run: echo "::set-env name=COMMITS::$(git log --reverse --format=%H commit-msg-validation-head..HEAD)"
+      - name: get-files
+        run: echo "$COMMITS"
