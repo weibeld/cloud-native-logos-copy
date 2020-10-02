@@ -16,8 +16,5 @@ jobs:
           $(git log --reverse --format=%H commit-msg-validation-head..HEAD)
           EOF
           EEOOFF
-          #echo "COMMITS<<EOF" >>"$GITHUB_ENV"
-          #git log --reverse --format=%H commit-msg-validation-head..HEAD >>"$GITHUB_ENV"
-          #echo EOF >>"$GITHUB_ENV"
       - name: get-files
         run: echo "$COMMITS"
