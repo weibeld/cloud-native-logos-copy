@@ -682,6 +682,9 @@ subjects:
   - id: weaveworks
     name: Apache Zookeeper
     url: https://zookeeper.apache.org/
+  - id: google
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
 tags:
   - foo
   - baz
