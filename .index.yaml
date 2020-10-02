@@ -647,17 +647,41 @@ subjects:
       - aasd
       - asdf
   - id: ambassador
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: canonical
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: cisco
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: coreos
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: intel
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: jetstack
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: nokia
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: oracle
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: red-hat
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: tigera
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: vmware
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
   - id: weaveworks
+    name: Apache Zookeeper
+    url: https://zookeeper.apache.org/
 tags:
   - foo
   - baz
