@@ -10,4 +10,4 @@ jobs:
         with:
           fetch-depth: 0
       - name: test
-        run: git log -n 5
+        run: git log --format=%H commit-msg-validation-head..HEAD
