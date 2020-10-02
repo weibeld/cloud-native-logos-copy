@@ -44,7 +44,7 @@ subjects:
     name: Calico
     by: tigera
     url: https://www.projectcalico.org/
-  - id: cassandra
+  - id: apache-cassandra
     name: Apache Cassandra
     by: apache
     url: https://cassandra.apache.org/
@@ -234,7 +234,7 @@ subjects:
     name: gVisor
     by: google
     url: https://gvisor.dev/
-  - id: hadoop
+  - id: apache-hadoop
     name: Apache Hadoop
     by: apache
     url: https://hadoop.apache.org/
@@ -632,7 +632,37 @@ subjects:
     name: Weave Net
     by: weaveworks
     url: https://www.weave.works/oss/net/
+    tags:
+      - foo
+      - bar
   - id: apache-zookeeper
     name: Apache Zookeeper
     by: apache
     url: https://zookeeper.apache.org/
+    tags:
+      - foo
+      - baz
+      - bar
+      - hello
+      - aasd
+      - asdf
+  - id: ambassador
+  - id: canonical
+  - id: cisco
+  - id: coreos
+  - id: intel
+  - id: jetstack
+  - id: nokia
+  - id: oracle
+  - id: red-hat
+  - id: tigera
+  - id: vmware
+  - id: weaveworks
+tags:
+  - foo
+  - baz
+  - bar
+  - hello
+  - aasd
+  - qwer
+  - asdf
