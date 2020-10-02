@@ -6,5 +6,6 @@ jobs:
   validate-commit-messages:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: test
         run: git log -n 5
