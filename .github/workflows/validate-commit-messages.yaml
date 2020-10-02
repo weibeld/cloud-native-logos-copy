@@ -1,0 +1,10 @@
+name: validate-commit-messages
+on: push
+env:
+  SCHEMA: .schemas/commit-msg.schema.json
+jobs:
+  validate-commit-messages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: echo "${{ toJson(github.event.commits) }}"
