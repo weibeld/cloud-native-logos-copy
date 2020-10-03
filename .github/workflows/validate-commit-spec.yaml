@@ -8,6 +8,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      # TODO: Put ajv binary (/usr/local/bin/ajv) in cache and access from there
+      - name: install-ajv
+        run: sudo npm install -g ajv-cli
       - name: validate
         run: |
           # Get the most recent commit where this workflow succeeded
