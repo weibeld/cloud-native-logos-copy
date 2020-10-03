@@ -11,7 +11,7 @@ jobs:
       - name: validate
         run: |
           # Get the most recent commit where this workflow succeeded
-          base_commit=$(curl "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$(basename ${{ github.workflow }}/runs?status=success" | jq -r '.workflow_runs | sort_by(.run_number) | last | .head_sha')
+          base_commit=$(curl "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$(basename ${{ github.workflow }})/runs?status=success" | jq -r '.workflow_runs | sort_by(.run_number) | last | .head_sha')
           # Get all SVG files that have been added or modified since the base commit
           files=($(git diff-tree --name-only --diff-filter=AM -r "$base_commit" HEAD | sed -ne '/^[^\.].*\/.*\.svg$/p'))
           # Determine the commits that last added/modified these files
