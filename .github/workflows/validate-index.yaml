@@ -16,11 +16,12 @@ jobs:
         if: steps.cache-ajv.outputs.cache-hit == false
         run: |
           npm install --prefix ~/ajv-cli ajv-cli
-          ls ~/node_modules/ajv-cli
+          ls ~/ajv-cli
+          ls ~/ajv-cli/node_modules
       - name: link-ajv
         run: |
           mkdir -p "$HOME"/bin
-          ln -s "$HOME"/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
+          ln -s ~/ajv-cli/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
           echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
       - name: test-ajv
         run: |
