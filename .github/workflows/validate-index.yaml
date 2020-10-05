@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       # TODO: put yq binary (/usr/local/bin/yq) in cache and access from there (https://github.com/actions/cache#skipping-steps-based-on-cache-hit)
       - name: install-yq
-        run: brew install yq #sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
+        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yq #sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
       - name: validate
         run: |
           duplicates=$(yq read "$INDEX" 'subjects[*].id' | sort | uniq -d)
