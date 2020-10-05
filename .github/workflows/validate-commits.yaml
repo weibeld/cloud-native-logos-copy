@@ -1,8 +1,8 @@
 on: push
 env:
-  SCHEMA: .schemas/commit-msg.schema.json
+  SCHEMA: .schemas/commit.schema.json
 jobs:
-  validate-commit-spec:
+  validate-commits:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,30 +16,29 @@ jobs:
       - name: validate
         run: |
           # Get the most recent commit where this workflow succeeded
-          base_commit=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$(basename ${{ github.workflow }})/runs?status=success" | jq -r '.workflow_runs | sort_by(.run_number) | last | .head_sha')
-          echo "$base_commit"
+          base=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$(basename ${{ github.workflow }})/runs?status=success" | jq -r '.workflow_runs | sort_by(.run_number) | last | .head_sha')
+          echo "$base"
           # Get all SVG files that have been added or modified since the base commit
-          files=($(git diff-tree --name-only --diff-filter=AM -r "$base_commit" HEAD | sed -ne '/^[^\.].*\/.*\.svg$/p'))
-          # Determine the commits that last added/modified these files
+          files=($(git diff-tree --name-only --diff-filter=AM -r "$base" HEAD | sed -ne '/^[^\.].*\/.*\.svg$/p'))
+          # Determine the commit that last added/modified each file
           declare -A map
           for f in "${files[@]}"; do
-            # Map from commits to the files that they added/modified
             map[$(git log -n 1 --format=%H "$f")]+="$f "
           done
-          # Validate the YAML spec in the commit message of each commit
+          # Validate the YAML spec in the commit message of each identified commit
           for c in "${!map[@]}"; do
             yaml=$(mktemp -d)/tmp.yaml
             git log --format=%b -n 1 "$c" | sed -n '/^---$/ { :a; p; n; ba; }' >"$yaml"
             # Ensure that YAML spec is not empty
             if ! [[ -s "$yaml" ]]; then
-              echo -e "Commit $c: empty YAML spec"
-              echo "The following files have been last touched by this commit:"
+              echo -e "$c: missing YAML spec"
+              echo "The following files have been last added/modified by this commit:"
               echo ${map[$c]% } | tr ' ' $'\n'
               exit 1
             fi
             # Ensure that YAML spec matches schema
             if ! out=$(ajv validate -s "$SCHEMA" -d "$yaml" 2>&1); then
-              echo -e "Commit $c: invalid YAML spec"
+              echo -e "$c: YAML spec is invalid"
               cat "$yaml"
               echo "$out"
               exit 1
@@ -51,9 +50,9 @@ jobs:
                 grep -q "^$f$" <<<"$keys" || missing+=("$f")
               done
               if [[ "${missing[@]}" ]]; then
-                echo "Commit $c: YAML spec does not cover all added/modified files"
+                echo "$c: YAML spec does not cover all added/modified files"
                 cat "$yaml"
-                echo "The following files are missing from the YAML spec:"
+                echo "The following files are not covered by the YAML spec:"
                 printf '%s\n' "${missing[@]}"
                 exit 1
               fi
