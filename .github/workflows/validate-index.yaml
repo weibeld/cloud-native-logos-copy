@@ -21,14 +21,13 @@ jobs:
        # if: steps.cache-ajv.outputs.cache-hit == false
         run: |
           npm install --prefix "$HOME" ajv-cli
-          mkdir -p "$HOME"/bin
-          PATH="$HOME"/bin:"$PATH"
-          echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
-          ln "$HOME"/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
+          #mkdir -p "$HOME"/bin
+          #PATH="$HOME"/bin:"$PATH"
+          #echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
+          #ln "$HOME"/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
       - name: test-ajv
         run: |
-          echo "$PATH"
-          ajv help
+          "$HOME"/node_modules/ajv-cli/index.js
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
   validate-no-duplicate-index-entries:
