@@ -11,7 +11,7 @@ jobs:
         id: cache-ajv
         with:
           key: ajv
-          path: '$HOME/ajv-cli'
+          path: ~/ajv-cli
       - name: install-ajv
         if: steps.cache-ajv.outputs.cache-hit == false
         run: |
