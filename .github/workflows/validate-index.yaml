@@ -7,11 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: test
-        run: |
-          ls -ld ${{ runner.temp }}
-          ls -l ${{ runner.tool_cache }}
-          echo "$PATH"
       - uses: actions/cache@v2
         id: cache-ajv
         with:
@@ -32,8 +27,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # TODO: put yq binary (/usr/local/bin/yq) in cache and access from there (https://github.com/actions/cache#skipping-steps-based-on-cache-hit)
-      - name: install-yq
-        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install yq #sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
+      - uses: actions/cache@v2
+        id: cache-yq
+        with:
+          key: yq-${{ os.runner }}
+          path: ${{ runner.temp }}/cache/yq/bin/yq
+      - if: '! steps.cache-yq.outputs.cache-hit'
+        name: install-yq
+        run: |
+          wget -q -O ${{ runner.temp }}/cache/yq/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64
+          chmod +x ${{ runner.temp }}/cache/yq/bin/yq
+      - name: list
+        run: tree ${{ runner.temp }}/cache/yq
+      - name: link-yq
+        run: echo "PATH=${{ runner.temp }}/cache/yq/bin:$PATH" >> "$GITHUB_ENV"
       - name: validate
         run: |
           duplicates=$(yq read "$INDEX" 'subjects[*].id' | sort | uniq -d)
