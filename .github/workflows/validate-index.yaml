@@ -10,7 +10,7 @@ jobs:
       - name: before-install-ajv
         run: |
           whoami
-          ls $HOME
+          echo $HOME
           ls -ld /usr /usr/local /usr/local/bin /usr/local/lib/node_modules
       - uses: actions/cache@v2
         id: cache-ajv
