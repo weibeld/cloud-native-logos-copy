@@ -30,7 +30,7 @@ jobs:
       - uses: actions/cache@v2
         id: cache-yq
         with:
-          key: yq-${{ os.runner }}
+          key: yq-${{ runner.os }}
           path: ${{ runner.temp }}/cache/yq/bin/yq
       - if: '! steps.cache-yq.outputs.cache-hit'
         name: install-yq
