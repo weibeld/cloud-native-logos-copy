@@ -20,13 +20,16 @@ jobs:
           base=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$(basename ${{ github.workflow }})/runs?status=success" | jq -r '.workflow_runs | sort_by(.run_number) | last | .head_sha')
           # If the workflow has never been run before, use the root commit as the base
           [[ "$base" = null ]] && base=$(git rev-list --max-parents=0 HEAD)
-          echo "$base"
+          echo "Base: $base"
           # Get all SVG files that have been added or modified since the base commit
           files=($(git diff-tree --name-only --diff-filter=AM -r "$base" HEAD | sed -ne '/^[^\.].*\/.*\.svg$/p'))
           # Determine the commit that last added/modified each file
           declare -A map
           for f in "${files[@]}"; do
             map[$(git log -n 1 --format=%H "$f")]+="$f "
+          done
+          for c in "${!map[@]}"; do
+            echo "$c: ${map[$c}]"
           done
           # Validate the YAML spec in the commit message of each identified commit
           for c in "${!map[@]}"; do
