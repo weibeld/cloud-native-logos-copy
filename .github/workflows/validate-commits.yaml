@@ -36,7 +36,7 @@ jobs:
             if ! [[ -s "$yaml" ]]; then
               echo -e "\e[31mError in commit $c:\n$(sed 's/^/  > /' <<<$msg)\e[0m"
               echo -e "\e[31mYAML spec is missing (below are the files that this commit added/modified):\e[0m"
-              echo ${map[$c]% } | tr ' ' $'\n' | sed 's/^/- /'
+              echo ${map[$c]% } | tr ' ' $'\n' | sed 's/^/  - /'
               exit 1
             fi
             # Ensure that YAML spec matches schema
@@ -54,7 +54,7 @@ jobs:
               if [[ "${missing[@]}" ]]; then
                 echo -e "\e[31mError in commit $c:\n$(sed 's/^/  > /' <<<$msg)\e[0m"
                 echo -e "\e[31mThe YAML spec does not include the following files:\e[0m"
-                printf '%s\n' "${missing[@]}" | sed 's/^/- /'
+                printf '%s\n' "${missing[@]}" | sed 's/^/  - /'
                 exit 1
               fi
             fi
