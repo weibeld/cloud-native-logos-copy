@@ -7,24 +7,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: before-install-ajv
-        run: |
-          whoami
-          echo $HOME
-          ls -ld /usr /usr/local /usr/local/bin /usr/local/lib/node_modules
-      - uses: actions/cache@v2
-        id: cache-ajv
-        with:
-          key: ajv
-          path: /usr/local/lib/node_modules/ajv-cli
+#      - name: before-install-ajv
+#        run: |
+#          whoami
+#          echo $HOME
+#          ls -ld /usr /usr/local /usr/local/bin /usr/local/lib/node_modules
+#      - uses: actions/cache@v2
+#        id: cache-ajv
+#        with:
+#          key: ajv
+#          path: /usr/local/lib/node_modules/ajv-cli
       - name: install-ajv
         if: steps.cache-ajv.outputs.cache-hit == false
         run: |
-          sudo npm install -g ajv-cli
-          echo $NODE_PATH
-          ls /usr/local/lib/node_modules/ajv-cli
+          sudo npm install ajv-cli
+          ls
+          ls node_modules
+          ls node_modules/ajv-cli
       - name: test-ajv
-        run: /usr/local/lib/node_modules/ajv-cli/index.js help
+        run: ajv help
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
   validate-no-duplicate-index-entries:
