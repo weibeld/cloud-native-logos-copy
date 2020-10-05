@@ -10,22 +10,16 @@ jobs:
       - uses: actions/cache@v2
         id: cache-ajv
         with:
-          key: ajv
-          path: ~/ajv-cli
+          key: ajv-${{ runner.os }}
+          path: ~/.cache/ajv-cli
       - name: install-ajv
         if: steps.cache-ajv.outputs.cache-hit == false
-        run: |
-          npm install --prefix ~/ajv-cli ajv-cli
-          ls ~/ajv-cli
-          ls ~/ajv-cli/node_modules
+        run: npm install --prefix ~/.cache/ajv-cli ajv-cli
       - name: link-ajv
         run: |
-          mkdir -p "$HOME"/bin
-          ln -s ~/ajv-cli/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
+          mkdir -p ~/bin
+          ln -s ~/.cach/ajv-cli/node_modules/ajv-cli/index.js ~/bin/ajv
           echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
-      - name: test-ajv
-        run: |
-          ajv help
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
   validate-no-duplicate-index-entries:
