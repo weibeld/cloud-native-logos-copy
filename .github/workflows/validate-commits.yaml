@@ -54,7 +54,7 @@ jobs:
               if [[ "${missing[@]}" ]]; then
                 echo -e "\e[31mError in commit $c:\n$(sed 's/^/  > /' <<<$msg)\e[0m"
                 echo -e "\e[31mThe YAML spec does not include the following files:\e[0m"
-                printf '- %s\n' "${missing[@]}"
+                printf '%s\n' "${missing[@]}" | sed 's/^/- /'
                 exit 1
               fi
             fi
