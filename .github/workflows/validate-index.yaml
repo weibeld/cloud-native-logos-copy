@@ -7,13 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: print-env
-        run: echo "${{ toJson(env) }}"
-      #- uses: actions/cache@v2
-      #  id: cache-ajv
-      #  with:
-      #    key: ajv
-      #    path: "$HOME"/ajv-cli
+      - uses: actions/cache@v2
+        id: cache-ajv
+        with:
+          key: ajv
+          path: ~/ajv-cli
       - name: install-ajv
         if: steps.cache-ajv.outputs.cache-hit == false
         run: |
