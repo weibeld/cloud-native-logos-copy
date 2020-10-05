@@ -39,7 +39,9 @@ jobs:
           wget -q -O ${{ runner.temp }}/cache/yq/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64
           chmod +x ${{ runner.temp }}/cache/yq/bin/yq
       - name: list
-        run: tree ${{ runner.temp }}/cache/yq
+        run: |
+          ls ${{ runner.temp }}/cache/yq
+          ls ${{ runner.temp }}/cache/yq/bin
       - name: link-yq
         run: echo "PATH=${{ runner.temp }}/cache/yq/bin:$PATH" >> "$GITHUB_ENV"
       - name: validate
