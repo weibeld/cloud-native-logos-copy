@@ -22,6 +22,7 @@ jobs:
         run: |
           npm install --prefix "$HOME" ajv-cli
           mkdir -p "$HOME"/bin
+          PATH="$HOME"/bin:"$PATH"
           ln "$HOME"/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
       - name: test-ajv
         run: ajv help
