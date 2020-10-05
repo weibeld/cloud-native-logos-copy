@@ -18,7 +18,7 @@ jobs:
       - name: link-ajv
         run: |
           mkdir -p ~/bin
-          ln -s ~/.cach/ajv-cli/node_modules/ajv-cli/index.js ~/bin/ajv
+          ln -s ~/.cache/ajv-cli/node_modules/ajv-cli/index.js ~/bin/ajv
           echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
