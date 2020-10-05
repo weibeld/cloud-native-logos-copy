@@ -29,7 +29,7 @@ jobs:
             map[$(git log -n 1 --format=%H "$f")]+="$f "
           done
           for c in "${!map[@]}"; do
-            echo "$c: ${map[$c}]"
+            echo "$c: ${map[$c]}"
           done
           # Validate the YAML spec in the commit message of each identified commit
           for c in "${!map[@]}"; do
