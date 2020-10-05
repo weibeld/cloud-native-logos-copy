@@ -18,12 +18,11 @@ jobs:
 #          key: ajv
 #          path: /usr/local/lib/node_modules/ajv-cli
       - name: install-ajv
-        if: steps.cache-ajv.outputs.cache-hit == false
+       # if: steps.cache-ajv.outputs.cache-hit == false
         run: |
-          sudo npm install ajv-cli
-          ls
-          ls node_modules
-          ls node_modules/ajv-cli
+          npm install --prefix "$HOME" ajv-cli
+          mkdir -p "$HOME"/bin
+          ln "$HOME"/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
       - name: test-ajv
         run: ajv help
       - name: validate
