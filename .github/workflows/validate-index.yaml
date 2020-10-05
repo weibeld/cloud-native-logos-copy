@@ -7,8 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # TODO: Put ajv binary (/usr/local/bin/ajv) in cache and access from there
-      - name: install-ajv
+      - uses: actions/cache@v2
+        id: cache-ajv
+        with:
+          key: ajv
+          path: /usr/local/bin/ajv
+      - if: steps.cache-ajv.outputs.cache-hit == false
+        name: install-ajv
         run: sudo npm install -g ajv-cli
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
