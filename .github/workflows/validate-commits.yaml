@@ -15,8 +15,11 @@ jobs:
         run: sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
       - name: validate
         run: |
+          set -e
           # Get the most recent commit where this workflow succeeded
           base=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$(basename ${{ github.workflow }})/runs?status=success" | jq -r '.workflow_runs | sort_by(.run_number) | last | .head_sha')
+          # If the workflow has never been run before, use the root commit as the base
+          [[ "$base" = null ]] && base=$(git rev-list --max-parents=0 HEAD)
           echo "$base"
           # Get all SVG files that have been added or modified since the base commit
           files=($(git diff-tree --name-only --diff-filter=AM -r "$base" HEAD | sed -ne '/^[^\.].*\/.*\.svg$/p'))
