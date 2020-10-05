@@ -7,24 +7,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#      - name: before-install-ajv
-#        run: |
-#          whoami
-#          echo $HOME
-#          ls -ld /usr /usr/local /usr/local/bin /usr/local/lib/node_modules
-#      - uses: actions/cache@v2
-#        id: cache-ajv
-#        with:
-#          key: ajv
-#          path: /usr/local/lib/node_modules/ajv-cli
+      - uses: actions/cache@v2
+        id: cache-ajv
+        with:
+          key: ajv
+          path: "$HOME"/ajv-cli
       - name: install-ajv
-       # if: steps.cache-ajv.outputs.cache-hit == false
+        if: steps.cache-ajv.outputs.cache-hit == false
         run: |
-          npm install --prefix "$HOME" ajv-cli
+          npm install --prefix "$HOME"/ajv-cli ajv-cli
+      - name: link-ajv
+        run: |
           mkdir -p "$HOME"/bin
-          PATH="$HOME"/bin:"$PATH"
-          echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
           ln -s "$HOME"/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
+          echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
       - name: test-ajv
         run: |
           ajv help
