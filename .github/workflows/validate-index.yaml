@@ -21,7 +21,7 @@ jobs:
         run: |
           sudo npm install -g ajv-cli
           echo $NODE_PATH
-          ls /usr/local/lib/node_modules
+          ls /usr/local/lib/node_modules/ajv-cli
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
   validate-no-duplicate-index-entries:
