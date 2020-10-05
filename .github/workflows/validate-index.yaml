@@ -23,7 +23,7 @@ jobs:
           echo $NODE_PATH
           ls /usr/local/lib/node_modules/ajv-cli
       - name: test-ajv
-        run: /usr/local/lib/node_modules/ajv-cli/index.js
+        run: /usr/local/lib/node_modules/ajv-cli/index.js help
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
   validate-no-duplicate-index-entries:
