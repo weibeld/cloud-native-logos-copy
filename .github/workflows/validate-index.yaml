@@ -15,7 +15,7 @@ jobs:
       - name: install-ajv
         if: steps.cache-ajv.outputs.cache-hit == false
         run: |
-          npm install --prefix "$HOME"/ajv-cli ajv-cli
+          npm install --prefix ~/ajv-cli ajv-cli
       - name: link-ajv
         run: |
           mkdir -p "$HOME"/bin
