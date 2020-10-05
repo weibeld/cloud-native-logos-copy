@@ -34,15 +34,15 @@ jobs:
             sed -n '/^---$/ { :a; p; n; ba; }' <<<"$msg" >"$yaml"
             # Ensure that YAML spec is not empty
             if ! [[ -s "$yaml" ]]; then
-              echo -e "$Error in commit $c:\n$msg"
-              echo "The YAML spec is empty, but the following files have been added/modified by this commit:"
+              echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
+              echo -e "\e[31mMissing YAML spec, but the following files have been added/modified by this commit:"
               echo ${map[$c]% } | tr ' ' $'\n'
               exit 1
             fi
             # Ensure that YAML spec matches schema
             if ! out=$(ajv validate -s "$SCHEMA" -d "$yaml" 2>&1); then
-              echo -e "$Error in commit $c:\n$msg"
-              echo -e "The YAML spec is invalid.\n$out"
+              echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
+              echo -e "\e[31mThe YAML spec is invalid (validation output below):\n$out\e0m"
               exit 1
             fi
             # Ensure that YAML spec covers all files last added/modified by this commit
@@ -52,8 +52,8 @@ jobs:
                 grep -q "^$f$" <<<"$keys" || missing+=("$f")
               done
               if [[ "${missing[@]}" ]]; then
-                echo -e "$Error in commit $c:\n$msg"
-                echo "The YAML spec does not cover the following files:"
+                echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
+                echo -e "\e[31mThe YAML spec does not cover the following files:"
                 printf '%s\n' "${missing[@]}"
                 exit 1
               fi
