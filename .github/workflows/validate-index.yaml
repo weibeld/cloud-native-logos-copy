@@ -16,15 +16,15 @@ jobs:
         id: cache-ajv
         with:
           key: ajv-cli
-          path: ~/.cache/ajv-cli
-      - name: install-ajv
-        if: steps.cache-ajv.outputs.cache-hit == false
-        run: npm install --prefix ~/.cache/ajv-cli ajv-cli
+          path: ${{ runner.temp }}/cache/ajv-cli
+      - if: ! steps.cache-ajv.outputs.cache-hit
+        name: install-ajv
+        run: npm install --prefix ${{ runner.temp }}/cache/ajv-cli ajv-cli
       - name: link-ajv
         run: |
-          mkdir -p ~/bin
-          ln -s ~/.cache/ajv-cli/node_modules/ajv-cli/index.js ~/bin/ajv
-          echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
+          mkdir -p ${{ runner.temp }}/bin
+          ln -s ${{ runner.temp }}/cache/ajv-cli/node_modules/ajv-cli/index.js ${{ runner.temp }}/bin/ajv
+          echo "PATH=${{ runner.temp }}/bin:$PATH" >> "$GITHUB_ENV"
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
   validate-no-duplicate-index-entries:
