@@ -40,8 +40,14 @@ jobs:
           chmod +x ${{ runner.temp }}/cache/yq/bin/yq
       - name: list
         run: |
-          ls ${{ runner.temp }}/cache/yq
-          ls ${{ runner.temp }}/cache/yq/bin
+          echo "${{ runner.temp }}"
+          ls -l ${{ runner.temp }}
+          echo "${{ runner.temp }}"/cache
+          ls -l ${{ runner.temp }}/cache
+          echo "${{ runner.temp }}"/cache/yq
+          ls -l ${{ runner.temp }}/cache/yq
+          echo "${{ runner.temp }}"/cache/yq/bin
+          ls -l ${{ runner.temp }}/cache/yq/bin
       - name: link-yq
         run: echo "PATH=${{ runner.temp }}/cache/yq/bin:$PATH" >> "$GITHUB_ENV"
       - name: validate
