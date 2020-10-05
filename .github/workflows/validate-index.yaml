@@ -17,7 +17,7 @@ jobs:
         with:
           key: ajv-cli
           path: ${{ runner.temp }}/cache/ajv-cli
-      - if: ! steps.cache-ajv.outputs.cache-hit
+      - if: ${{ ! steps.cache-ajv.outputs.cache-hit }}
         name: install-ajv
         run: npm install --prefix ${{ runner.temp }}/cache/ajv-cli ajv-cli
       - name: link-ajv
