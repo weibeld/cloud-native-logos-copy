@@ -20,33 +20,29 @@ jobs:
           base=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$(basename ${{ github.workflow }})/runs?status=success" | jq -r '.workflow_runs | sort_by(.run_number) | last | .head_sha')
           # If the workflow has never been run before, use the root commit as the base
           [[ "$base" = null ]] && base=$(git rev-list --max-parents=0 HEAD)
-          echo "Base: $base"
           # Get all SVG files that have been added or modified since the base commit
           files=($(git diff-tree --name-only --diff-filter=AM -r "$base" HEAD | sed -ne '/^[^\.].*\/.*\.svg$/p'))
-          # Determine the commit that last added/modified each file
+          # Determine the commit that last added/modified each SVG file
           declare -A map
           for f in "${files[@]}"; do
             map[$(git log -n 1 --format=%H "$f")]+="$f "
           done
-          for c in "${!map[@]}"; do
-            echo "$c: ${map[$c]}"
-          done
           # Validate the YAML spec in the commit message of each identified commit
           for c in "${!map[@]}"; do
+            msg=$(git log --format=%B -n 1 "$c")
             yaml=$(mktemp -d)/tmp.yaml
-            git log --format=%b -n 1 "$c" | sed -n '/^---$/ { :a; p; n; ba; }' >"$yaml"
+            sed -n '/^---$/ { :a; p; n; ba; }' <<<"$msg" >"$yaml"
             # Ensure that YAML spec is not empty
             if ! [[ -s "$yaml" ]]; then
-              echo -e "$c: missing YAML spec"
-              echo "The following files have been last added/modified by this commit:"
+              echo -e "$Error in commit $c:\n$msg"
+              echo "The YAML spec is empty, but the following files have been added/modified by this commit:"
               echo ${map[$c]% } | tr ' ' $'\n'
               exit 1
             fi
             # Ensure that YAML spec matches schema
             if ! out=$(ajv validate -s "$SCHEMA" -d "$yaml" 2>&1); then
-              echo -e "$c: YAML spec is invalid"
-              cat "$yaml"
-              echo "$out"
+              echo -e "$Error in commit $c:\n$msg"
+              echo -e "The YAML spec is invalid.\n$out"
               exit 1
             fi
             # Ensure that YAML spec covers all files last added/modified by this commit
@@ -56,9 +52,8 @@ jobs:
                 grep -q "^$f$" <<<"$keys" || missing+=("$f")
               done
               if [[ "${missing[@]}" ]]; then
-                echo "$c: YAML spec does not cover all added/modified files"
-                cat "$yaml"
-                echo "The following files are not covered by the YAML spec:"
+                echo -e "$Error in commit $c:\n$msg"
+                echo "The YAML spec does not cover the following files:"
                 printf '%s\n' "${missing[@]}"
                 exit 1
               fi
