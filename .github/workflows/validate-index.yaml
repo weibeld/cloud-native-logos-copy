@@ -25,6 +25,8 @@ jobs:
           mkdir -p ${{ runner.temp }}/bin
           ln -s ${{ runner.temp }}/cache/ajv-cli/node_modules/ajv-cli/index.js ${{ runner.temp }}/bin/ajv
           echo "PATH=${{ runner.temp }}/bin:$PATH" >> "$GITHUB_ENV"
+      - name: test
+        run: which ajv
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
   validate-no-duplicate-index-entries:
