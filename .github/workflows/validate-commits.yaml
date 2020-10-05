@@ -28,34 +28,34 @@ jobs:
             map[$(git log -n 1 --format=%H "$f")]+="$f "
           done
           # Validate the YAML spec in the commit message of each identified commit
-#          for c in "${!map[@]}"; do
-#            msg=$(git log --format=%B -n 1 "$c")
-#            yaml=$(mktemp -d)/tmp.yaml
-#            sed -n '/^---$/ { :a; p; n; ba; }' <<<"$msg" >"$yaml"
-#            # Ensure that YAML spec is not empty
-#            if ! [[ -s "$yaml" ]]; then
-#              echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
-#              echo -e "\e[31mMissing YAML spec, but the following files have been added/modified by this commit:"
-#              echo ${map[$c]% } | tr ' ' $'\n'
-#              exit 1
-#            fi
-#            # Ensure that YAML spec matches schema
-#            if ! out=$(ajv validate -s "$SCHEMA" -d "$yaml" 2>&1); then
-#              echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
-#              echo -e "\e[31mThe YAML spec is invalid (validation output below):\e[0m\n$out"
-#              exit 1
-#            fi
-#            # Ensure that YAML spec covers all files last added/modified by this commit
-#            keys=$(yq read -p p "$yaml" '*' | tr -d '"')
-#            if ! [[ "$keys" =~ ^source$|^edited$|^converted ]]; then
-#              for f in ${map[$c]}; do
-#                grep -q "^$f$" <<<"$keys" || missing+=("$f")
-#              done
-#              if [[ "${missing[@]}" ]]; then
-#                echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
-#                echo -e "\e[31mThe YAML spec does not cover the following files:"
-#                printf '%s\n' "${missing[@]}"
-#                exit 1
-#              fi
-#            fi
-#          done
+          for c in "${!map[@]}"; do
+            msg=$(git log --format=%B -n 1 "$c")
+            yaml=$(mktemp -d)/tmp.yaml
+            sed -n '/^---$/ { :a; p; n; ba; }' <<<"$msg" >"$yaml"
+            # Ensure that YAML spec is not empty
+            if ! [[ -s "$yaml" ]]; then
+              echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
+              echo -e "\e[31mMissing YAML spec, but the following files have been added/modified by this commit:"
+              echo ${map[$c]% } | tr ' ' $'\n'
+              exit 1
+            fi
+            # Ensure that YAML spec matches schema
+            if ! out=$(ajv validate -s "$SCHEMA" -d "$yaml" 2>&1); then
+              echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
+              echo -e "\e[31mThe YAML spec is invalid (validation output below):\e[0m\n$out"
+              exit 1
+            fi
+            # Ensure that YAML spec covers all files last added/modified by this commit
+            keys=$(yq read -p p "$yaml" '*' | tr -d '"')
+            if ! [[ "$keys" =~ ^source$|^edited$|^converted ]]; then
+              for f in ${map[$c]}; do
+                grep -q "^$f$" <<<"$keys" || missing+=("$f")
+              done
+              if [[ "${missing[@]}" ]]; then
+                echo -e "\e[31mError in commit $c:\n$msg\n\e[0m"
+                echo -e "\e[31mThe YAML spec does not cover the following files:"
+                printf '%s\n' "${missing[@]}"
+                exit 1
+              fi
+            fi
+          done
