@@ -23,7 +23,7 @@ jobs:
           npm install --prefix "$HOME" ajv-cli
           mkdir -p "$HOME"/bin
           PATH="$HOME"/bin:"$PATH"
-          echo "PATH=$HOME/bin:$PATH >> "$GITHUB_ENV"
+          echo "PATH=$HOME/bin:$PATH" >> "$GITHUB_ENV"
           ln "$HOME"/node_modules/ajv-cli/index.js "$HOME"/bin/ajv
       - name: test-ajv
         run: |
