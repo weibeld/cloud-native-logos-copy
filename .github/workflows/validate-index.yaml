@@ -3,7 +3,7 @@ env:
   INDEX: .index.yaml
   SCHEMA: .schemas/index.schema.json
 jobs:
-  ensure-schema-match:
+  ensure-yaml-matches-schema:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
