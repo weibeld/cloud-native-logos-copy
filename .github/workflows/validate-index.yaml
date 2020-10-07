@@ -18,7 +18,7 @@ jobs:
         run: |
           mkdir -p ${{ runner.temp }}/cache/ajv-cli/bin
           ln -s ${{ runner.temp }}/cache/ajv-cli/src/node_modules/ajv-cli/index.js ${{ runner.temp }}/cache/ajv-cli/bin/ajv
-          echo "PATH=${{ runner.temp }}/cache/ajv-cli/bin:$PATH" >> "$GITHUB_ENV"
+          echo "${{ runner.temp }}/cache/ajv-cli/bin" >> "$GITHUB_PATH"
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
