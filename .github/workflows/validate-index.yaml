@@ -3,7 +3,7 @@ env:
   INDEX: .index.yaml
   SCHEMA: .schemas/index.schema.json
 jobs:
-  validate-structure:
+  ensure-schema-match:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
           echo "PATH=${{ runner.temp }}/cache/ajv-cli/bin:$PATH" >> "$GITHUB_ENV"
       - name: validate
         run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
-  validate-no-duplicate-index-entries:
+  ensure-no-duplicate-subjects:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,11 +31,11 @@ jobs:
         run: |
           duplicates=$(yq read "$INDEX" 'subjects[*].id' | sort | uniq -d)
           if [[ "$duplicates" ]]; then
-            echo -e "The following subjects have duplicate entries in the index:\n$duplicates"
+            echo -e "The following subjects have duplicate entries:\n$duplicates"
             exit 1
           fi
           exit 0
-  validate-each-dir-has-index-entry:
+  ensure-each-dir-has-subject:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -51,7 +51,7 @@ jobs:
             exit 1
           fi
           exit 0
-  validate-each-index-entry-has-dir:
+  ensure-each-subject-has-dir:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v2
@@ -67,7 +67,7 @@ jobs:
             exit 1
           fi
           exit 0
-  validate-parent-subjects:
+  ensure-parent-subjects-are-valid:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v2
@@ -87,7 +87,7 @@ jobs:
             exit 1
           fi
           exit 0
-  validate-tags:
+  ensure-tags-are-valid:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v2
