@@ -90,8 +90,10 @@ jobs:
   ensure-tags-are-valid:
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v2
+      #- uses: actions/checkout@v2
       - uses: weibeld/install-yq@v1
+      - name: get-index
+        run: curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >.index.yaml
       - name: validate
         run: |
           ids=$(yq read .index.yaml 'subjects[*].id')

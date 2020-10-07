@@ -11,8 +11,7 @@ jobs:
       # TODO: Put ajv binary (/usr/local/bin/ajv) in cache and access from there
       - name: install-ajv
         run: sudo npm install -g ajv-cli
-      - name: install-yq
-        run: sudo wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
+      - uses: weibeld/install-yq@v1
       - name: validate
         run: |
           set -e
