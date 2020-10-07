@@ -6,7 +6,6 @@ jobs:
   ensure-yaml-matches-schema:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: actions/cache@v2
         id: cache-ajv
         with:
@@ -21,17 +20,61 @@ jobs:
           ln -s ${{ runner.temp }}/cache/ajv-cli/src/node_modules/ajv-cli/index.js ${{ runner.temp }}/cache/ajv-cli/bin/ajv
           echo "PATH=${{ runner.temp }}/cache/ajv-cli/bin:$PATH" >> "$GITHUB_ENV"
       - name: validate
-        run: ajv validate --all-errors -s "$SCHEMA" -d "$INDEX"
+        run: |
+          curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
+          curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$SCHEMA" >schema.yaml
+          ajv validate --all-errors -s schema.yaml -d index.yaml
   ensure-no-duplicate-subjects:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: weibeld/install-yq@v1
       - name: validate
         run: |
-          duplicates=$(yq read "$INDEX" 'subjects[*].id' | sort | uniq -d)
+          curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
+          duplicates=$(yq read index.yaml 'subjects[*].id' | sort | uniq -d)
           if [[ "$duplicates" ]]; then
             echo -e "The following subjects have duplicate entries:\n$duplicates"
+            exit 1
+          fi
+          exit 0
+  ensure-parent-subjects-are-valid:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: weibeld/install-yq@v1
+      - name: validate
+        run: |
+          curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
+          ids=$(yq read index.yaml 'subjects[*].id')
+          for i in $ids; do
+            by=$(yq read .index.yaml "subjects(id==$i).by")
+            if [[ "$by" ]] && ! grep -q "^$by$" <<<"$ids"; then
+              unknown+=("$i: $by")
+            fi
+          done
+          if [[ "$unknown" ]]; then
+            echo "The following subjects have unknown parent subjects:"
+            printf '%s\n' "${unknown[@]}"
+            exit 1
+          fi
+          exit 0
+  ensure-tags-are-valid:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: weibeld/install-yq@v1
+      - name: validate
+        run: |
+          curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
+          ids=$(yq read index.yaml 'subjects[*].id')
+          tags=$(yq read index.yaml 'tags[*]')
+          for i in $ids; do
+            for t in $(yq read index.yaml "subjects(id==$i).tags[*]"); do
+              grep -q "^$t$" <<<"$tags" || acc+=($t)
+            done
+            [[ "$acc" ]] && unknown+=("$i: ${acc[*]}") && unset acc
+          done
+          if [[ "$unknown" ]]; then
+            echo "The following subjects have unknown tags:"
+            printf '%s\n' "${unknown[@]}"
             exit 1
           fi
           exit 0
@@ -64,49 +107,6 @@ jobs:
           if [[ "${missing[@]}" ]]; then
             echo "The following index entries have no corresponding data directory:"
             printf '%s\n' "${missing[@]}"
-            exit 1
-          fi
-          exit 0
-  ensure-parent-subjects-are-valid:
-    runs-on: ubuntu-latest
-    steps: 
-      - uses: actions/checkout@v2
-      - uses: weibeld/install-yq@v1
-      - name: validate
-        run: |
-          ids=$(yq read "$INDEX" 'subjects[*].id')
-          for i in $ids; do
-            by=$(yq read .index.yaml "subjects(id==$i).by")
-            if [[ "$by" ]] && ! grep -q "^$by$" <<<"$ids"; then
-              unknown+=("$i: $by")
-            fi
-          done
-          if [[ "$unknown" ]]; then
-            echo "The following subjects have unknown parent subjects:"
-            printf '%s\n' "${unknown[@]}"
-            exit 1
-          fi
-          exit 0
-  ensure-tags-are-valid:
-    runs-on: ubuntu-latest
-    steps: 
-      #- uses: actions/checkout@v2
-      - uses: weibeld/install-yq@v1
-      - name: get-index
-        run: curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >.index.yaml
-      - name: validate
-        run: |
-          ids=$(yq read .index.yaml 'subjects[*].id')
-          tags=$(yq read .index.yaml 'tags[*]')
-          for i in $ids; do
-            for t in $(yq read .index.yaml "subjects(id==$i).tags[*]"); do
-              grep -q "^$t$" <<<"$tags" || acc+=($t)
-            done
-            [[ "$acc" ]] && unknown+=("$i: ${acc[*]}") && unset acc
-          done
-          if [[ "$unknown" ]]; then
-            echo "The following subjects have unknown tags:"
-            printf '%s\n' "${unknown[@]}"
             exit 1
           fi
           exit 0
