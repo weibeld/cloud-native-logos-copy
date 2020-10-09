@@ -1,4 +1,4 @@
-on: workflow_dispatch
+on: push
 env:
   SCHEMA: .schemas/commit.schema.json
 jobs:
@@ -8,9 +8,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: weibeld/install-ajv-cli@master
+      - uses: weibeld/install-ajv-cli@dev
         with:
-          version: 3.2.1
+          version: 3.2.0
       - uses: weibeld/install-yq@v1
       - name: validate
         run: |
