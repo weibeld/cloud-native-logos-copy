@@ -1,4 +1,4 @@
-on: push
+on: workflow_dispatch
 env:
   INDEX: .index.yaml
   SCHEMA: .schemas/index.schema.json
@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: weibeld/install-ajv-cli@master
         with:
-          version: 1.0.0
+          version: 3.2.1
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
