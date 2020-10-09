@@ -3,22 +3,10 @@ env:
   INDEX: .index.yaml
   SCHEMA: .schemas/index.schema.json
 jobs:
-  ensure-yaml-matches-schema:
+  ensure-matches-schema:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/cache@v2
-        id: cache-ajv
-        with:
-          key: ajv-cli
-          path: ${{ runner.temp }}/cache/ajv-cli/src
-      - if: '! steps.cache-ajv.outputs.cache-hit'
-        name: install-ajv
-        run: npm install --prefix ${{ runner.temp }}/cache/ajv-cli/src ajv-cli
-      - name: link-ajv
-        run: |
-          mkdir -p ${{ runner.temp }}/cache/ajv-cli/bin
-          ln -s ${{ runner.temp }}/cache/ajv-cli/src/node_modules/ajv-cli/index.js ${{ runner.temp }}/cache/ajv-cli/bin/ajv
-          echo "${{ runner.temp }}/cache/ajv-cli/bin" >> "$GITHUB_PATH"
+      - uses: weibeld/install-ajv-cli@master
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
