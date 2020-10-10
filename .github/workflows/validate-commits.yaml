@@ -9,8 +9,6 @@ jobs:
         with:
           fetch-depth: 0
       - uses: weibeld/install-ajv-cli@master
-        with:
-          version: 3.2.0
       - uses: weibeld/install-yq@v1
       - name: validate
         run: |
