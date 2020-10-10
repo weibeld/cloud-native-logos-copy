@@ -4,7 +4,7 @@ env:
   SCHEMA: .schemas/index.schema.json
 jobs:
   ensure-matches-schema:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: weibeld/install-ajv-cli@v1
       - name: validate
@@ -15,7 +15,7 @@ jobs:
   ensure-no-duplicate-subjects:
     runs-on: ubuntu-latest
     steps:
-      - uses: weibeld/install-yq@v1
+      - uses: weibeld/install-yq@dev
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
@@ -28,7 +28,7 @@ jobs:
   ensure-parent-subjects-are-valid:
     runs-on: ubuntu-latest
     steps: 
-      - uses: weibeld/install-yq@v1
+      - uses: weibeld/install-yq@dev
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
@@ -48,7 +48,7 @@ jobs:
   ensure-tags-are-valid:
     runs-on: ubuntu-latest
     steps: 
-      - uses: weibeld/install-yq@v1
+      - uses: weibeld/install-yq@dev
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: weibeld/install-yq@v1
+      - uses: weibeld/install-yq@dev
       - name: validate
         run: |
           for d in */; do
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v2
-      - uses: weibeld/install-yq@v1
+      - uses: weibeld/install-yq@dev
       - name: validate
         run: |
           for i in $(yq read "$INDEX" 'subjects[*].id'); do
