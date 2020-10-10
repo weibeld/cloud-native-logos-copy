@@ -6,7 +6,7 @@ jobs:
   ensure-matches-schema:
     runs-on: macos-latest
     steps:
-      - uses: weibeld/install-ajv-cli@master
+      - uses: weibeld/install-ajv-cli@v1
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
