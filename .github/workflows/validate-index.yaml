@@ -4,7 +4,7 @@ env:
   SCHEMA: .schemas/index.schema.json
 jobs:
   ensure-matches-schema:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: weibeld/install-ajv-cli@master
       - name: validate
