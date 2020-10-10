@@ -8,7 +8,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: weibeld/install-ajv-cli@dev
+      - uses: weibeld/install-ajv-cli@master
         with:
           version: 3.2.0
       - uses: weibeld/install-yq@v1
