@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: weibeld/install-yq@dev
+        with:
+          version: 3.3.4
       - name: validate
         run: |
           curl -s https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref }}/"$INDEX" >index.yaml
