@@ -1,0 +1,23 @@
+foo.svg:
+  converted:
+    source:
+      url: https://docs.microsoft.com/en-us/azure/architecture/icons/
+      description: foo bar
+    inputFormat: EPS
+    tool: Affinity Designer
+    description: foo bar
+bar.svg:
+  edited:
+    description: foo bar
+    tool: Affinity Designer
+    document: google-cloud-platform.afdesign
+    sources:
+      - url: https://docs.microsoft.com/en-us/azure/architecture/icons/
+        description: foo bar
+      - description: foo bar
+    fonts:
+      - Open Sans, Regular
+foo/baz.svg:
+  ource:
+    url: https://docs.microsoft.com/en-us/azure/architecture/icons/
+    description: foo

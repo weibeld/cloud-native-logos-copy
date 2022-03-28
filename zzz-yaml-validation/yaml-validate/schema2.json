@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "edited": {
+      "type": "object",
+      "properties": {
+        "description": { "type": "string" },
+        "tool": { "type": "string" },
+        "file": { "type": "string" },
+        "sources": {
+          "type": "array",
+          "items": [
+          ]
+        }
+      },
+      "required": [ "description", "tool", "file"],
+      "additionalProperties": false
+    },
+    "required": [ "edited" ],
+    "additionalProperties": false
+  } 
+}
