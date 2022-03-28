@@ -1,0 +1,41 @@
+Logos to add (2 Oct 2020):
+
+vmware
+red-hat
+coreos
+google
+canonical
+intel
+oracle
+pivotal
+rabbitmq (vmware)
+continuous-delivery-foundation
+ambassador
+weaveworks
+tigera
+jetstack
+cisco
+nokia
+
+Logos to rename (2 Oct 2020):
+
+gke:google-kubernetes-engine
+hadoop:apache-hadoop
+cassandra:apache-cassandra
+couchdb:apache-couchdb
+ibm-cloud-kubernetes:ibm-cloud-kubernetes-service
+kafka:apache-kafka
+maven:apache-maven
+mesos:apache-mesos
+nuage:nuage-networks
+opa:open-policy-agent
+openservicemesh:open-service-mesh
+rke:rancher-kubernetes-engine
+serverless:serverless-framework
+spark:apache-spark
+tomcat:apache-tomcat
+traefik:traefik-proxy
+tungsten:tungsten-fabric
+zookeeper:apache-zookeeper
+cncf:cloud-native-computing-foundation
+cni:container-network-interface
